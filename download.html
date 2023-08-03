@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epherome 下载</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        header h1 {
+            margin: 0;
+        }
+        
+        nav {
+            background-color: #f1f1f1;
+            padding: 10px;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        nav li {
+            float: left;
+        }
+        
+        nav li a {
+            display: block;
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+        }
+        
+        nav li a:hover {
+            background-color: #ddd;
+        }
+        .container h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .container p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            margin-bottom: 10px;
+        }
+        nav .right-li {
+    float: right;
+  }
+  nav li .nol{
+    display: inline-block;
+    color: #333;
+    text-decoration: none;
+  }
+    </style>
+    <script>
+        fetch('https://api.github.com/repos/ResetPower/Epherome/releases')
+        .then(response => response.json())
+        .then(data => {
+        // 获取第一个发布的HTML URL
+        const htmlUrl = data[0].html_url;
+        // 提取版本号
+        const version = htmlUrl.match(/tag\/(.*)$/)[1];
+        checkOperatingSystem(version);
+        })
+
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Epherome - 重新定义 Minecraft 启动</h1>
+      </header>
+    
+      <nav>
+        <ul>
+            <li><a href="index.html">主页</a></li>
+            <li><a href="download.html">下载</a></li>
+            <li><a href="#">扩展</a></li>
+            <li><a href="https://github.com/ResetPower/Epherome/wiki">文档</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li class="right-li"><a href="#">English</a></li>
+            <li class="right-li"><p class="nol">|</p></li>
+            <li class="right-li"><a href="#">简体中文</a>
+        </ul>
+      </nav>
+    <div class="container">
+        <h1 id="OSNAME">加载中……</h1>
+        <p id="OSVERSION"></p>
+        <div id="downloadButtonContainer"></div>
+        <p>更多下载请参见<a href="https://github.com/ResetPower/Epherome/releases/">Github Realease</a>界面</p>
+    </div>
+
+    <script>
+        function checkOperatingSystem(version) {
+            var osName = "Unknown";
+            var osVersion = "Unknown";
+
+            var userAgent = navigator.userAgent.toLowerCase();
+
+            // 检测Windows操作系统
+            if (userAgent.indexOf("win") >= 0) {
+                osName = "Windows";
+                osVersion = "Windows 7 及以上";
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+".exe", "下载安装程序<br \>.exe");
+            }
+
+            // 检测Mac操作系统
+            else if (userAgent.indexOf("mac") >= 0) {
+                osName = "Mac";
+                osVersion = "OS X El Capitan 及以上";
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+"-arm64.dmg", "Apple Silicon下载<br \>.dmg");
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+"-x64.dmg", "Intel CPU下载<br \>.dmg");
+            }
+
+            // 检测Linux操作系统
+            else if (userAgent.indexOf("linux") >= 0) {
+                osName = "Linux";
+                osVersion = "Ubuntu 14.04，Fedora 24，Debian 8 及以上";
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+".deb", ".deb软件包");
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+".rpm", ".rpm软件包");
+                addDownloadButton("https://github.com/ResetPower/Epherome/releases/download/"+version+"/Epherome-"+version+".snap", ".snap软件包");
+            }
+
+            // 更新页面内容
+            document.getElementById("OSNAME").innerHTML = "Epherome " + osName + "版";
+            document.getElementById("OSVERSION").innerHTML = "系统要求：" + osVersion;
+        }
+        function addDownloadButton(downloadUrl, buttonText) {
+            var container = document.getElementById("downloadButtonContainer");
+            var buttonContainer = document.createElement("div");
+            buttonContainer.className = "button-container";
+            var button = document.createElement("button");
+            button.className = "button";
+            button.innerHTML = buttonText;
+            button.onclick = function() {
+                window.open(downloadUrl);
+            };
+            buttonContainer.appendChild(button);
+            container.appendChild(buttonContainer);
+        }
+    </script>
+</body>
+</html>
